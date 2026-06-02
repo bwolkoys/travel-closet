@@ -1,12 +1,12 @@
 "use client";
-
+ 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { createClient } from "@supabase/supabase-js";
-
+ 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
+ 
 // ── Types ────────────────────────────────────────────────────────────────────
 interface ClothingItem {
   id: string;
@@ -17,7 +17,7 @@ interface ClothingItem {
   image: string;
   category: string;
 }
-
+ 
 interface TravelPack {
   id: string;
   name: string;
@@ -25,12 +25,12 @@ interface TravelPack {
   date: string;
   item_ids: string[];
 }
-
+ 
 // ── Constants ────────────────────────────────────────────────────────────────
 const CATEGORIES = ["Tops", "Sweaters", "Bottoms", "Dresses", "Matching Sets", "Outerwear", "Footwear", "Accessories", "Other"];
 const BOTTOMS_SUBCATEGORIES = ["Shorts", "Skirts", "Pants"];
 const ALL_LEAF_CATEGORIES = ["Tops", "Sweaters", "Shorts", "Skirts", "Pants", "Dresses", "Matching Sets", "Outerwear", "Footwear", "Accessories", "Other"];
-
+ 
 // ── Palette ──────────────────────────────────────────────────────────────────
 const C = {
   bg: "#fdf8f6",
@@ -47,7 +47,7 @@ const C = {
   borderLight: "#f5ecec",
   cream: "#fdf3f0",
 };
-
+ 
 // ── Responsive hook ───────────────────────────────────────────────────────────
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -59,7 +59,7 @@ function useIsMobile() {
   }, []);
   return isMobile;
 }
-
+ 
 // ── Style helpers ─────────────────────────────────────────────────────────────
 function chip(active: boolean): React.CSSProperties {
   return {
@@ -75,7 +75,7 @@ function chip(active: boolean): React.CSSProperties {
     whiteSpace: "nowrap",
   };
 }
-
+ 
 function cardStyle(selectable: boolean, selected: boolean): React.CSSProperties {
   return {
     backgroundColor: C.surface,
@@ -88,7 +88,7 @@ function cardStyle(selectable: boolean, selected: boolean): React.CSSProperties 
     position: "relative",
   };
 }
-
+ 
 function btnPrimary(disabled?: boolean): React.CSSProperties {
   return {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px",
@@ -99,7 +99,7 @@ function btnPrimary(disabled?: boolean): React.CSSProperties {
     letterSpacing: "0.02em", opacity: disabled ? 0.65 : 1,
   };
 }
-
+ 
 function btnOutline(): React.CSSProperties {
   return {
     display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "6px",
@@ -108,7 +108,7 @@ function btnOutline(): React.CSSProperties {
     padding: "10px 20px", fontSize: "14px", fontWeight: 600, cursor: "pointer",
   };
 }
-
+ 
 function smallAction(variant: "primary" | "ghost" | "danger"): React.CSSProperties {
   return {
     flex: variant === "primary" ? 1 : undefined,
@@ -118,7 +118,7 @@ function smallAction(variant: "primary" | "ghost" | "danger"): React.CSSProperti
     color: variant === "primary" ? "#fff" : variant === "danger" ? "#c0392b" : C.mauve,
   };
 }
-
+ 
 function checkCircle(checked: boolean): React.CSSProperties {
   return {
     position: "absolute", top: "10px", right: "10px",
@@ -130,12 +130,12 @@ function checkCircle(checked: boolean): React.CSSProperties {
     boxShadow: checked ? `0 2px 8px rgba(194,139,139,0.4)` : "none",
   };
 }
-
+ 
 // ── Login ─────────────────────────────────────────────────────────────────────
 function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
+ 
   const handleGoogle = async () => {
     setLoading(true);
     setError("");
@@ -145,7 +145,7 @@ function LoginScreen() {
     });
     if (error) { setError(error.message); setLoading(false); }
   };
-
+ 
   return (
     <div style={{ minHeight: "100vh", background: `linear-gradient(135deg, #fdf3f0 0%, #fdf8f6 50%, #f5ecec 100%)`, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Inter', -apple-system, sans-serif", padding: "20px" }}>
       <div style={{ backgroundColor: C.surface, borderRadius: "28px", padding: "52px 44px", width: "100%", maxWidth: "420px", textAlign: "center", boxShadow: "0 8px 48px rgba(194,139,139,0.12)", border: `1px solid ${C.borderLight}` }}>
@@ -179,7 +179,7 @@ function LoginScreen() {
     </div>
   );
 }
-
+ 
 // ── Bottoms dropdown ──────────────────────────────────────────────────────────
 function BottomsDropdown({ filterCategory, setFilterCategory }: { filterCategory: string; setFilterCategory: (c: string) => void }) {
   const [open, setOpen] = useState(false);
@@ -187,7 +187,7 @@ function BottomsDropdown({ filterCategory, setFilterCategory }: { filterCategory
   const btnRef = useRef<HTMLButtonElement>(null);
   const isActive = filterCategory === "Bottoms" || BOTTOMS_SUBCATEGORIES.includes(filterCategory);
   const label = BOTTOMS_SUBCATEGORIES.includes(filterCategory) ? filterCategory : "Bottoms";
-
+ 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (btnRef.current && !btnRef.current.contains(e.target as Node)) setOpen(false);
@@ -195,7 +195,7 @@ function BottomsDropdown({ filterCategory, setFilterCategory }: { filterCategory
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
   }, []);
-
+ 
   const handleOpen = () => {
     if (btnRef.current) {
       const rect = btnRef.current.getBoundingClientRect();
@@ -204,7 +204,7 @@ function BottomsDropdown({ filterCategory, setFilterCategory }: { filterCategory
     setOpen((v) => !v);
     if (!isActive) setFilterCategory("Bottoms");
   };
-
+ 
   return (
     <>
       <button
@@ -237,34 +237,35 @@ function BottomsDropdown({ filterCategory, setFilterCategory }: { filterCategory
     </>
   );
 }
-
+ 
 // ── Main ──────────────────────────────────────────────────────────────────────
 export default function WardrobePage() {
   const isMobile = useIsMobile();
-
+ 
   const [userId, setUserId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [userEmail, setUserEmail] = useState("");
   const [userAvatar, setUserAvatar] = useState("");
   const [userName, setUserName] = useState("");
-
+ 
   const [items, setItems] = useState<ClothingItem[]>([]);
   const [packs, setPacks] = useState<TravelPack[]>([]);
   const [dataLoading, setDataLoading] = useState(false);
-
+ 
   const [showAddItem, setShowAddItem] = useState(false);
   const [showAddPack, setShowAddPack] = useState(false);
   const [editingItem, setEditingItem] = useState<ClothingItem | null>(null);
+  const [selectedItem, setSelectedItem] = useState<ClothingItem | null>(null);
   const [filterCategory, setFilterCategory] = useState("All");
   const [expandedPack, setExpandedPack] = useState<string | null>(null);
   const [packSelectMode, setPackSelectMode] = useState<string | null>(null);
   const [selectedForPack, setSelectedForPack] = useState<string[]>([]);
   const [saving, setSaving] = useState(false);
-
+ 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [form, setForm] = useState({ name: "", brand: "", size: "", link: "", image: "", category: "Tops" });
   const [packForm, setPackForm] = useState({ name: "", destination: "", date: "" });
-
+ 
   // Auth
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -282,7 +283,7 @@ export default function WardrobePage() {
     });
     return () => subscription.unsubscribe();
   }, []);
-
+ 
   // Load data
   const loadData = useCallback(async () => {
     if (!userId) return;
@@ -295,12 +296,12 @@ export default function WardrobePage() {
     setPacks((packsData ?? []).map((r) => ({ id: r.id, name: r.name, destination: r.destination ?? "", date: r.date ?? "", item_ids: r.item_ids ?? [] })));
     setDataLoading(false);
   }, [userId]);
-
+ 
   useEffect(() => { loadData(); }, [loadData]);
-
+ 
   // Item CRUD
   const resetForm = () => setForm({ name: "", brand: "", size: "", link: "", image: "", category: "Tops" });
-
+ 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -308,7 +309,7 @@ export default function WardrobePage() {
     reader.onload = () => setForm((f) => ({ ...f, image: reader.result as string }));
     reader.readAsDataURL(file);
   };
-
+ 
   const saveItem = async () => {
     if (!form.name || !form.brand || !form.size || !userId) return;
     setSaving(true);
@@ -322,7 +323,7 @@ export default function WardrobePage() {
     }
     resetForm(); setShowAddItem(false); setSaving(false);
   };
-
+ 
   const deleteItem = async (id: string) => {
     await supabase.from("clothing_items").delete().eq("id", id);
     setItems((prev) => prev.filter((i) => i.id !== id));
@@ -334,13 +335,22 @@ export default function WardrobePage() {
     }
     setPacks((prev) => prev.map((p) => ({ ...p, item_ids: p.item_ids.filter((iid) => iid !== id) })));
   };
-
+ 
+  const duplicateItem = async (item: ClothingItem) => {
+    if (!userId) return;
+    const { data, error } = await supabase
+      .from("clothing_items")
+      .insert({ user_id: userId, name: `${item.name} (copy)`, brand: item.brand, size: item.size, category: item.category, link: item.link, image: item.image })
+      .select().single();
+    if (!error && data) setItems((prev) => [...prev, { id: data.id, name: data.name, brand: data.brand, size: data.size, category: data.category, link: data.link ?? "", image: data.image ?? "" }]);
+  };
+ 
   const startEdit = (item: ClothingItem) => {
     setForm({ name: item.name, brand: item.brand, size: item.size, link: item.link, image: item.image, category: item.category });
     setEditingItem(item);
     setShowAddItem(true);
   };
-
+ 
   // Pack CRUD
   const savePack = async () => {
     if (!packForm.name || !userId) return;
@@ -356,7 +366,7 @@ export default function WardrobePage() {
     }
     setSaving(false);
   };
-
+ 
   const finishPackSelection = async () => {
     if (!packSelectMode) return;
     setSaving(true);
@@ -364,35 +374,35 @@ export default function WardrobePage() {
     setPacks((prev) => prev.map((p) => p.id === packSelectMode ? { ...p, item_ids: selectedForPack } : p));
     setPackSelectMode(null); setSelectedForPack([]); setSaving(false);
   };
-
+ 
   const deletePack = async (id: string) => {
     await supabase.from("travel_packs").delete().eq("id", id);
     setPacks((prev) => prev.filter((p) => p.id !== id));
   };
-
+ 
   const filteredItems =
     filterCategory === "All" ? items
     : filterCategory === "Bottoms" ? items.filter((i) => BOTTOMS_SUBCATEGORIES.includes(i.category))
     : items.filter((i) => i.category === filterCategory);
-
+ 
   // Responsive values
   const px = isMobile ? "16px" : "40px";
   const inputStyle: React.CSSProperties = { width: "100%", padding: "11px 16px", borderRadius: "12px", border: `1.5px solid ${C.border}`, fontSize: "14px", outline: "none", boxSizing: "border-box", backgroundColor: C.cream, color: C.text, fontFamily: "inherit" };
   const labelStyle: React.CSSProperties = { display: "block", fontSize: "12px", fontWeight: 700, color: C.mauve, marginBottom: "6px", letterSpacing: "0.06em", textTransform: "uppercase" };
-
+ 
   if (authLoading) return (
     <div style={{ minHeight: "100vh", background: C.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>
       <div style={{ width: "40px", height: "40px", borderRadius: "12px", background: `linear-gradient(135deg, ${C.roseLight}, ${C.roseMid})` }} />
     </div>
   );
-
+ 
   if (!userId) return <LoginScreen />;
-
+ 
   const firstName = userName.split(" ")[0] || "there";
-
+ 
   return (
     <div style={{ minHeight: "100vh", backgroundColor: C.bg, fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, sans-serif", color: C.text }}>
-
+ 
       {/* ── Header ── */}
       <header style={{ backgroundColor: C.surface, borderBottom: `1px solid ${C.borderLight}`, padding: `0 ${px}`, height: isMobile ? "56px" : "64px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "sticky", top: 0, zIndex: 100, boxShadow: "0 1px 12px rgba(194,139,139,0.06)" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
@@ -403,7 +413,7 @@ export default function WardrobePage() {
           </div>
           <span style={{ fontSize: isMobile ? "16px" : "18px", fontWeight: 800, color: C.text, letterSpacing: "-0.4px" }}>My Wardrobe</span>
         </div>
-
+ 
         {!packSelectMode && (
           <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
             {!isMobile && (
@@ -429,7 +439,7 @@ export default function WardrobePage() {
           </div>
         )}
       </header>
-
+ 
       {/* ── Hero ── */}
       {!packSelectMode && (
         <div style={{ background: `linear-gradient(135deg, ${C.roseLight} 0%, #fdf3f0 60%, ${C.cream} 100%)`, padding: isMobile ? "24px 16px 20px" : "36px 40px 32px", borderBottom: `1px solid ${C.borderLight}` }}>
@@ -449,7 +459,7 @@ export default function WardrobePage() {
           </div>
         </div>
       )}
-
+ 
       <div style={{ maxWidth: "1280px", margin: "0 auto", padding: isMobile ? "24px 16px 100px" : "40px 40px" }}>
         {dataLoading ? (
           <div style={{ textAlign: "center", padding: "80px 20px", color: C.textLight, fontSize: "15px" }}>
@@ -465,7 +475,7 @@ export default function WardrobePage() {
                   <p style={{ fontSize: "13px", color: C.textLight, marginTop: "2px" }}>{items.length} piece{items.length !== 1 ? "s" : ""}</p>
                 </div>
               </div>
-
+ 
               {/* Filter chips — horizontally scrollable on mobile */}
               <div style={{ display: "flex", gap: "8px", overflowX: "auto", paddingBottom: "8px", marginBottom: "24px", scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}>
                 {["All", ...CATEGORIES].map((cat) => {
@@ -485,7 +495,7 @@ export default function WardrobePage() {
                   );
                 })}
               </div>
-
+ 
               {/* Grid */}
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2, 1fr)" : "repeat(auto-fill, minmax(220px, 1fr))", gap: isMobile ? "12px" : "20px" }}>
                 {filteredItems.length === 0 && (
@@ -497,7 +507,17 @@ export default function WardrobePage() {
                   const inSelect = !!packSelectMode;
                   const isSelected = selectedForPack.includes(item.id);
                   return (
-                    <div key={item.id} style={cardStyle(inSelect, isSelected)} onClick={inSelect ? () => setSelectedForPack((prev) => prev.includes(item.id) ? prev.filter((id) => id !== item.id) : [...prev, item.id]) : undefined}>
+                    <div
+                      key={item.id}
+                      style={{ ...cardStyle(inSelect, isSelected), cursor: "pointer" }}
+                      onClick={() => {
+                        if (inSelect) {
+                          setSelectedForPack((prev) => prev.includes(item.id) ? prev.filter((id) => id !== item.id) : [...prev, item.id]);
+                        } else {
+                          setSelectedItem(item);
+                        }
+                      }}
+                    >
                       <div style={{ width: "100%", aspectRatio: "1", backgroundColor: C.roseLight, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", overflow: "hidden" }}>
                         {item.image
                           // eslint-disable-next-line @next/next/no-img-element
@@ -520,24 +540,13 @@ export default function WardrobePage() {
                         <div style={{ fontSize: isMobile ? "13px" : "14px", fontWeight: 700, marginBottom: "3px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: C.text }}>{item.name}</div>
                         <div style={{ fontSize: "12px", color: C.textMid, marginBottom: "1px" }}>{item.brand}</div>
                         <div style={{ fontSize: "12px", color: C.textLight }}>Size {item.size}</div>
-                        {!inSelect && (
-                          <div style={{ display: "flex", gap: "6px", marginTop: "10px" }}>
-                            {item.link && (
-                              <a href={item.link} target="_blank" rel="noopener noreferrer" style={{ ...smallAction("primary"), textDecoration: "none", textAlign: "center", display: "inline-flex", alignItems: "center", justifyContent: "center", flex: 1 }}>
-                                Buy
-                              </a>
-                            )}
-                            <button style={smallAction("ghost")} onClick={() => startEdit(item)}>Edit</button>
-                            <button style={smallAction("danger")} onClick={() => deleteItem(item.id)}>✕</button>
-                          </div>
-                        )}
                       </div>
                     </div>
                   );
                 })}
               </div>
             </section>
-
+ 
             {/* ── Travel Packs ── */}
             <section>
               <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
@@ -547,13 +556,13 @@ export default function WardrobePage() {
                 </div>
                 {!isMobile && <button style={btnPrimary()} onClick={() => setShowAddPack(true)}>+ New Trip</button>}
               </div>
-
+ 
               {packs.length === 0 && (
                 <div style={{ textAlign: "center", padding: "48px 20px", backgroundColor: C.surface, borderRadius: "20px", border: `1.5px dashed ${C.border}` }}>
                   <p style={{ color: C.textLight, fontSize: "15px" }}>No trips yet. Create one and pack your pieces.</p>
                 </div>
               )}
-
+ 
               {packs.map((pack) => {
                 const packItems = items.filter((i) => pack.item_ids.includes(i.id));
                 const isOpen = expandedPack === pack.id;
@@ -585,7 +594,7 @@ export default function WardrobePage() {
                         </svg>
                       </div>
                     </div>
-
+ 
                     {isOpen && (
                       <div style={{ borderTop: `1px solid ${C.borderLight}`, padding: isMobile ? "16px" : "20px 24px" }}>
                         {packItems.length === 0 ? (
@@ -623,7 +632,7 @@ export default function WardrobePage() {
           </>
         )}
       </div>
-
+ 
       {/* ── Add / Edit Item Modal ── */}
       {showAddItem && (
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(44,32,32,0.35)", backdropFilter: "blur(4px)", zIndex: 200, display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", padding: isMobile ? "0" : "20px" }} onClick={() => { setShowAddItem(false); setEditingItem(null); resetForm(); }}>
@@ -631,7 +640,7 @@ export default function WardrobePage() {
             {/* Drag handle on mobile */}
             {isMobile && <div style={{ width: "40px", height: "4px", borderRadius: "2px", backgroundColor: C.border, margin: "0 auto 20px" }} />}
             <div style={{ fontSize: "18px", fontWeight: 800, color: C.text, marginBottom: "24px" }}>{editingItem ? "Edit Item" : "Add to Wardrobe"}</div>
-
+ 
             <div style={{ marginBottom: "16px" }}>
               <label style={labelStyle}>Item Name *</label>
               <input style={inputStyle} placeholder="e.g. Silk Slip Dress" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} />
@@ -663,7 +672,7 @@ export default function WardrobePage() {
                 {form.image ? "Photo selected — tap to change" : "Upload a photo"}
               </button>
             </div>
-
+ 
             <div style={{ display: "flex", gap: "10px", marginTop: "20px" }}>
               <button style={{ ...btnOutline(), flex: 1 }} onClick={() => { setShowAddItem(false); setEditingItem(null); resetForm(); }}>Cancel</button>
               <button style={{ ...btnPrimary(saving), flex: 1 }} onClick={saveItem} disabled={saving}>
@@ -673,7 +682,7 @@ export default function WardrobePage() {
           </div>
         </div>
       )}
-
+ 
       {/* ── New Trip Modal ── */}
       {showAddPack && (
         <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(44,32,32,0.35)", backdropFilter: "blur(4px)", zIndex: 200, display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", padding: isMobile ? "0" : "20px" }} onClick={() => setShowAddPack(false)}>
@@ -701,7 +710,62 @@ export default function WardrobePage() {
           </div>
         </div>
       )}
-
+ 
+      {/* ── Item detail modal ── */}
+      {selectedItem && (
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(44,32,32,0.35)", backdropFilter: "blur(4px)", zIndex: 200, display: "flex", alignItems: isMobile ? "flex-end" : "center", justifyContent: "center", padding: isMobile ? "0" : "20px" }} onClick={() => setSelectedItem(null)}>
+          <div style={{ backgroundColor: C.surface, borderRadius: isMobile ? "24px 24px 0 0" : "24px", width: "100%", maxWidth: isMobile ? "100%" : "480px", maxHeight: "90vh", overflowY: "auto", boxShadow: "0 -8px 40px rgba(194,139,139,0.14)" }} onClick={(e) => e.stopPropagation()}>
+            {/* Image */}
+            <div style={{ width: "100%", aspectRatio: isMobile ? "4/3" : "1", backgroundColor: C.roseLight, display: "flex", alignItems: "center", justifyContent: "center", position: "relative", borderRadius: isMobile ? "24px 24px 0 0" : "24px 24px 0 0", overflow: "hidden" }}>
+              {selectedItem.image
+                // eslint-disable-next-line @next/next/no-img-element
+                ? <img src={selectedItem.image} alt={selectedItem.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                : <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke={C.roseMid} strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><path d="M8 21h8M12 17v4"/></svg>
+              }
+              {/* Close button */}
+              <button onClick={() => setSelectedItem(null)} style={{ position: "absolute", top: "12px", right: "12px", width: "32px", height: "32px", borderRadius: "50%", backgroundColor: "rgba(255,255,255,0.9)", border: "none", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "16px", color: C.textMid, fontWeight: 700 }}>
+                ✕
+              </button>
+              {/* Category badge */}
+              <div style={{ position: "absolute", bottom: "12px", left: "12px", backgroundColor: "rgba(255,255,255,0.9)", borderRadius: "100px", padding: "4px 12px", fontSize: "12px", fontWeight: 700, color: C.mauve }}>
+                {selectedItem.category}
+              </div>
+            </div>
+ 
+            {/* Details */}
+            <div style={{ padding: isMobile ? "20px 20px 36px" : "24px 28px 28px" }}>
+              {isMobile && <div style={{ width: "40px", height: "4px", borderRadius: "2px", backgroundColor: C.border, margin: "-8px auto 16px" }} />}
+              <h2 style={{ fontSize: "20px", fontWeight: 800, color: C.text, marginBottom: "4px" }}>{selectedItem.name}</h2>
+              <p style={{ fontSize: "14px", color: C.textMid, marginBottom: "2px" }}>{selectedItem.brand}</p>
+              <p style={{ fontSize: "14px", color: C.textLight, marginBottom: "24px" }}>Size {selectedItem.size}</p>
+ 
+              {/* Actions */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                {selectedItem.link && (
+                  <a href={selectedItem.link} target="_blank" rel="noopener noreferrer" style={{ ...btnPrimary(), textDecoration: "none", width: "100%", padding: "13px" }}>
+                    Buy this piece →
+                  </a>
+                )}
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px" }}>
+                  <button style={{ ...btnOutline(), justifyContent: "center" }} onClick={() => { duplicateItem(selectedItem); setSelectedItem(null); }}>
+                    Duplicate
+                  </button>
+                  <button style={{ ...btnOutline(), justifyContent: "center" }} onClick={() => { startEdit(selectedItem); setSelectedItem(null); }}>
+                    Edit
+                  </button>
+                </div>
+                <button
+                  style={{ backgroundColor: "#fde8e8", color: "#c0392b", border: "none", borderRadius: "100px", padding: "11px", fontSize: "14px", fontWeight: 700, cursor: "pointer", width: "100%" }}
+                  onClick={() => { deleteItem(selectedItem.id); setSelectedItem(null); }}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+ 
       {/* ── Pack selection banner ── */}
       {packSelectMode && (
         <div style={{ position: "fixed", bottom: isMobile ? "16px" : "28px", left: "50%", transform: "translateX(-50%)", backgroundColor: C.text, color: "#fff", borderRadius: "100px", padding: isMobile ? "12px 18px" : "16px 28px", display: "flex", alignItems: "center", gap: isMobile ? "10px" : "18px", fontSize: isMobile ? "13px" : "14px", fontWeight: 600, zIndex: 300, boxShadow: "0 8px 32px rgba(44,32,32,0.25)", whiteSpace: "nowrap", maxWidth: "calc(100vw - 32px)" }}>
